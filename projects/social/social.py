@@ -86,16 +86,29 @@ class SocialGraph:
                 elif friend not in visited:
                     visited[friend] = [*visited[userID], friend]
                     q.enqueue(friend)
-        
-        
-
-
         return visited
+        
+
+    def percentOfUsersAreFriends(self, userID):
+        myNetwork = self.getAllSocialPaths(userID)
+        return len(myNetwork) / len(self.users)
+
+    def avgDegreeOfSeperation(self, userID):
+        myNetwork = self.getAllSocialPaths(userID)
+        length = 0
+        for friend in myNetwork.values():
+            length += len(friend)
+        return length / len(myNetwork) - 1
+        
+
+
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populateGraph(10, 2)
+    sg.populateGraph(1000, 5)
     print(sg.friendships)
     connections = sg.getAllSocialPaths(1)
     print(connections)
+    print(sg.percentOfUsersAreFriends(1))
+    print(sg.avgDegreeOfSeperation(1))
