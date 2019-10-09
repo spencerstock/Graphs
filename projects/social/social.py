@@ -1,4 +1,8 @@
 
+from util import Queue
+
+import random
+
 
 class User:
     def __init__(self, name):
@@ -16,11 +20,14 @@ class SocialGraph:
         """
         if userID == friendID:
             print("WARNING: You cannot be friends with yourself")
+            return 0
         elif friendID in self.friendships[userID] or userID in self.friendships[friendID]:
             print("WARNING: Friendship already exists")
+            return 0
         else:
             self.friendships[userID].add(friendID)
             self.friendships[friendID].add(userID)
+            return 1
 
     def addUser(self, name):
         """
@@ -47,8 +54,13 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
+        for i in range(numUsers):
+            self.addUser(i)
 
         # Create friendships
+        for i in range(len(self.users)*(avgFriendships//2)):
+            while not self.addFriendship(random.randint(1,len(self.users)), random.randint(1,len(self.users))):
+                pass
 
     def getAllSocialPaths(self, userID):
         """
@@ -59,8 +71,25 @@ class SocialGraph:
 
         The key is the friend's ID and the value is the path.
         """
-        visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
+        visited = {}  
+        q = Queue()
+        visited[userID] = [userID]
+        q.enqueue(userID)
+
+
+        while len(q.queue) > 0:
+            userID = q.dequeue()
+            for friend in self.friendships[userID]:
+                if friend not in visited and userID not in visited:
+                        visited[friend] = [userID]
+                        q.enqueue(friend)
+                elif friend not in visited:
+                    visited[friend] = [*visited[userID], friend]
+                    q.enqueue(friend)
+        
+        
+
+
         return visited
 
 
