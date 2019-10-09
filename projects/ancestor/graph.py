@@ -89,26 +89,30 @@ class Graph:
                     qq.enqueue(list([*path, edge]))
 
 
-    def bfs_longest_route(self, starting_vertex):
+    def bfs_furthest_vertex(self, starting_vertex):
         """
         Returns the vertex furthest from the starting vertex
+        If there is more than one vertex tied for furthest, return the one with the lowest numeric ID.
         """
 
         qq = Queue()
         path = []
         greatest_distance = [0,0]
+        visited = set()
         qq.enqueue([starting_vertex])
         while qq.size() > 0:
             path = qq.dequeue()
-            for edge in self.vertices[path[-1]]:
-                qq.enqueue(list([*path, edge]))
-            if self.vertices[path[-1]] == set():
-                if len(path) ==  greatest_distance[0]: 
-                    if path[-1] < greatest_distance[1]: #this check will allow us to return the lowest value node on a tie
+            if path[-1] not in visited:
+                for edge in self.vertices[path[-1]]:
+                    qq.enqueue(list([*path, edge]))
+                    visited.add(path[-1])
+                if self.vertices[path[-1]] == set():
+                    if len(path) ==  greatest_distance[0]: 
+                        if path[-1] < greatest_distance[1]: #this check will allow us to return the lowest value node on a tie
+                            greatest_distance[1] = path[-1]
+                    if len(path) > greatest_distance[0]:
+                        greatest_distance[0] = len(path)
                         greatest_distance[1] = path[-1]
-                if len(path) > greatest_distance[0]:
-                    greatest_distance[0] = len(path)
-                    greatest_distance[1] = path[-1]
         return greatest_distance[1]
 
 
